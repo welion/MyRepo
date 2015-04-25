@@ -11,7 +11,7 @@ LOCAL_SERVER_HOST = 'localhost'
 REMOTE_SERVER_HOST = 'www.baidu.com'
 BUF_SIZE = 4096
 
-class PortForwarder(asyncore.dispatcher):
+class PortForwarder(asyncore.dispatcher): 
 	def __init__(self, ip, port, remoteip, remoteport, backlog=5):
 		asyncore.dispatcher.__init__(self)
 		self.remoteip = remoteip
