@@ -61,7 +61,7 @@ class ChatServer(object):
 		""" Return client name """
 		info = self.clientmap[client]
 		host, name = info[0][0], info[1]
-		return '@'.join(name, host)
+		return '@'.join((name, host))
 
 	def run(self):
 		inputs = [self.server, sys.stdin]
@@ -92,7 +92,7 @@ class ChatServer(object):
 					msg = "\n(Connected: New client %d) from %s)" %(self.clients, self.get_client_name(client))
 					for output in self.outputs:
 						send(output,msg)
-					self.output.append(client)
+					self.outputs.append(client)
 
 				elif sock == sys.stdin:
 					# handle the stdin 
@@ -148,7 +148,7 @@ class ChatClient(object):
 			self.connected = True
 			
 			# Send my name
-			send(self.sock, 'NAME:' + self.name)
+			send(self.sock, 'NAME: ' + self.name)
 			data = receive(self.sock)
 			
 			# Contains client address, set it
@@ -160,7 +160,7 @@ class ChatClient(object):
 
 	def run(self):
 		""" Chat client main loop """
-		while self.connectted:
+		while self.connected:
 			try:
 				sys.stdout.write(self.prompt)
 				sys.stdout.flush()
