@@ -13,7 +13,7 @@ import argparse
 SERVER_HOST = 'localhost'
 CHAT_SERVER_NAME = 'server'
 
-# 一些关键的辅助组件
+# Some utilites
 def send(channel, *args):
 	buffer = cPickle.dumps(args)
 	value = socket.htonl(len(buffer))
@@ -34,14 +34,14 @@ def receive(channel):
 	return cPickle.loads(buf)[0]
 
 class ChatServer(object):
-	""" 使用select建立server"""
-	def __init__(self, port, backlog):
+	""" An example chat server using select """
+	def __init__(self, port, backlog=5):
 		self.clients = 0
 		self.clientmap = {}
 		self.outputs = []
 		self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.bind((SERVER_HOST, port))
+		self.server.bind((SERVER_HOST, port))
 		print "Server listening on the port: %s..." % port
 		self.server.listen(backlog)
 
@@ -50,15 +50,15 @@ class ChatServer(object):
 
 	def sighandler(self, signum, frame):
 		"""clean up client outputs"""
-		# 关闭socket
+		# close socket
 		print 'Shuting down the server...'
-		# 关闭所有已连接的client 的 socket
+		# Close existing client sockets
 		for output in self.outputs:
 			output.close()
 		self.server.close()
 
 	def get_client_name(self, client):
-		""" 返回 client 的名称 """
+		""" Return client name """
 		info = self.clientmap[client]
 		host, name = info[0][0], info[1]
 		return '@'.join(name, host)
@@ -75,33 +75,34 @@ class ChatServer(object):
 
 			for sock in readable:
 				if sock == self.server:
-					# 处理server的socket
+					# handle the socket of server
 					client, address = self.server.accept()
 					print "Chat Server got connection from %d from %s" % (client.fileno(), address)
 					
-					# 获取登录的NAME
+					# read the login name
 					cname = receive(client).split('NAME: ')[1]
 
-					# 计算出NAME并回复信息
+					# compute client name and send back
 					self.clients += 1
 					send(client, 'CLIENT: ' + str(address[0]))
 					inputs.append(client)
 					self.clientmap[client] = (address, cname)
 					
-					# 发送登录信息给其他client
+					# Send join information to other clients
 					msg = "\n(Connected: New client %d) from %s)" %(self.clients, self.get_client_name(client))
 					for output in self.outputs:
 						send(output,msg)
 					self.output.append(client)
 
 				elif sock == sys.stdin:
-					# 处理标准输入
+					# handle the stdin 
 					junk = sys.stdin.readline()
 					running = False
 
 				else:
-					# 处理其他socket
+					# handle the other socket
 					try:
+
 						data = receive(sock)
 						if data:
 							# Send as new client's message...
@@ -136,10 +137,10 @@ class ChatClient(object):
 		self.host = host
 		self.port = port
 		
-		# 初始化标签
+		# Initial prompt
 		self.prompt = '['  + '@'.join((name, socket.gethostname().split('.')[0])) + ']>'
 		
-		# 连接远程主机
+		# Connect to server
 		try:
 			self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			self.sock.connect((host, self.port))
@@ -163,7 +164,7 @@ class ChatClient(object):
 			try:
 				sys.stdout.write(self.prompt)
 				sys.stdout.flush()
-				# 等待标准输入和socket
+				# Wait for input from stdin
 				readable, writeable, exceptional = select.select([0,self.sock], [], [])
 				for sock in readable:
 					if sock == 0:
@@ -187,7 +188,7 @@ class ChatClient(object):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description = 'Socket server example')
 	parser.add_argument('--name', action="store", dest="name", required=True)
-	parser.add_argument('--port', action="store", dest="port", type=int required=True)
+	parser.add_argument('--port', action="store", dest="port", type=int, required=True)
 	given_args = parser.parse_args()
 	port = given_args.port
 	name = given_args.name
