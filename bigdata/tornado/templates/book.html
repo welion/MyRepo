@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>{{title}}</title>
+	</head>
+
+	<body>
+		<ol>
+			{% for book in books %}
+				<li>名称：{{book}}</li>
+			{% end %}
+			
+		</ol>
+		{% if systime is not None %}
+			<p>{{systime}}</p>
+		{% end %}
+	</body>
+</html>

@@ -36,7 +36,8 @@ def main(request):
 	
 	# Get system info 
 #	message = "It works" + str(cpu) + str(GetUserName()) + GetMemInfo()['total'] + GetMemInfo()['used'] + GetMemInfo()['per']
-	filepath = '/home/welion/django/Monitor/monitor/page.html'
+	pagebase = os.getcwd()
+	filepath = pagebase + "/page.html"
 	message = Maketemplate(filepath,GetUserName(),GetUserName(),GetCpuInfo(),GetMemInfo())
 
 	return HttpResponse(message)
