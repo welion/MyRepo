@@ -27,6 +27,33 @@ class BookHandler(tornado.web.RequestHandler):
 				'Head First: python'
 			])
 
+class SysInfoHandler(tornado.web.RequestHandler):
+        def GetCpuInfo(self):
+                return str(os.popen('cat /proc/cpuinfo |grep "model name" |sed "s/model name\t\://"|uniq').read())
+	
+        def GetUserName(self):
+                return str(os.popen('hostname').read())
+
+        def GetMemInfo(self):
+                MemTotal = os.popen('free -m|grep Mem|awk \'{print $2 "M"}\'').read()
+                MemUsed  = os.popen('free -m|grep Mem|awk \'{print $3 "M"}\'').read()
+                MemPer   = os.popen('free -m|grep Mem|awk \'{print ($3-$6-$7)/$2*100 \"%\" }\'').read()
+                return {'total':str(MemTotal),
+                        'used' :str(MemUsed),
+                        'per'  :str(MemPer),}
+
+        def get(self):
+                cpuinfo=self.GetCpuInfo()
+                username=self.GetUserName()
+                meminfo=self.GetMemInfo()
+                self.render('sysinfo.html',
+                            hostname="hostname",
+                            cpuinfo=cpuinfo,
+                            username=username,
+                            meminfo=meminfo,
+                            )
+                
+        
 
 class PoemPageHandler(tornado.web.RequestHandler):
 	def post(self):
@@ -42,6 +69,7 @@ if __name__ == '__main__':
 		handlers=[(r'/',IndexHandler),
 			  (r'/poem',PoemPageHandler),
 			  (r'/book',BookHandler),
+                          (r'/sysinfo',SysInfoHandler),
 			  
 		],
 		template_path=os.path.join(os.path.dirname(__file__),"templates")
