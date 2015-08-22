@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{ page_title }}</title>
+		<link rel="stylesheet" href="{{ static_url("css/style.css") }}" />
+	</head>	
+	<body>
+		<div id="container">
+			<header>
+				{% block header %}<h1>Burt's Books</h1>{% end %}
+			</header>	
+			<div id="main">
+				<div id="content">
+					{% block body %}
+						<p>这里是在main.html里写的</p>
+					{% end %}	
+				</div>
+			</div>
+			<footer>
+				{% block footer %}
+					<p>
+					For more information about our selection, hours or events, please email us at
+					<a href="mailto:353566165@qq.com">353566165@qq.com</a>	
+					</p>
+				{% end %}
+			</footer>
+		</div>	
+		<script src="{{ static_url("jss/script.js") }}"></script>
+	</body>
+</html>

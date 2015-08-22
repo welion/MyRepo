@@ -10,5 +10,20 @@
 			<p>Noun<br><input type="text" name="noun3"></p>
 			<input type="submit">
 		</form>
+
+		{% extends "main.html" %}
+
+		{% block header %}
+    			<h1>{{ header_text }}</h1>
+		{% end %}
+
+		{% block body %}
+    			<p>Hello from the child template!</p>
+			<p>hahahahahahahhahahahhahhahahahah</p>
+		{% end %}
+
+		{% block footer %}
+    			<p>{{ footer_text }}</p>
+		{% end %}
 	</body>
 </html>

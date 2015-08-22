@@ -11,9 +11,20 @@ import tornado.web
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
-class IndexHandler(tornado.web.RequestHandler):
+class MainHandler(tornado.web.RequestHandler):
 	def get(self):
-		self.render('index.html')
+		self.render('index.html',
+			header_text = 'Header goes here',
+			footer_text = 'footer goes here',
+		)
+
+#class IndexHandler(tornado.web.RequestHandler):
+#	def get(self):
+#		self.render('index.html',
+#			header_text = 'Header goes here',
+#			footer_text = 'footer goes here',
+#		)
+
 	
 class BookHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -66,7 +77,7 @@ class PoemPageHandler(tornado.web.RequestHandler):
 if __name__ == '__main__':
 	tornado.options.parse_command_line()
 	app = tornado.web.Application(
-		handlers=[(r'/',IndexHandler),
+		handlers=[(r'/',MainHandler),
 			  (r'/poem',PoemPageHandler),
 			  (r'/book',BookHandler),
                           (r'/sysinfo',SysInfoHandler),
@@ -77,3 +88,4 @@ if __name__ == '__main__':
 	http_server = tornado.httpserver.HTTPServer(app)
 	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
+	
