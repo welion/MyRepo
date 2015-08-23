@@ -5,15 +5,15 @@
 		<link rel="stylesheet" href="{{ static_url("css/style.css") }}" />
 	</head>	
 	<body>
+		<p></p>
+		<p>这里是从main.sh继承过来打标签哦！</p>
 		<div id="container">
 			<header>
 				{% block header %}<h1>Burt's Books</h1>{% end %}
 			</header>	
 			<div id="main">
 				<div id="content">
-					{% block body %}
-						<p>这里是在main.html里写的</p>
-					{% end %}	
+					{% block body %}{% end %}	
 				</div>
 			</div>
 			<footer>
@@ -25,6 +25,6 @@
 				{% end %}
 			</footer>
 		</div>	
-		<script src="{{ static_url("jss/script.js") }}"></script>
+		<script src="{{ static_url("js/script.js") }}"></script>
 	</body>
 </html>
