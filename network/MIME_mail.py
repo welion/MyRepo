@@ -81,7 +81,7 @@ try:
     server = smtplib.SMTP()
     server.connect(HOST,"25")
     server.starttls()
-    server.login("welion_zhong@163.com","zwh123@163")
+    server.login("welion_zhong@163.com","")
     server.sendmail(FROM,[TO],msg.as_string())
     server.quit()
     print "邮件发送成功"
